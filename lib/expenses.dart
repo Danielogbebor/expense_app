@@ -29,7 +29,7 @@ class _ExpensesState extends State<Expenses> {
       context: context,
       builder: (context) {
         return Container(
-          child: Text("data thisdjkdhsfuihdesuifhiusdrh"),
+          child: Text(""),
         );
       },
     );
