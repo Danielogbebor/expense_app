@@ -1,5 +1,6 @@
 import 'package:expense_app/expenses_list.dart';
 import 'package:expense_app/models/expense.dart';
+import 'package:expense_app/new_expense.dart';
 import 'package:flutter/material.dart';
 
 class Expenses extends StatefulWidget {
@@ -10,6 +11,12 @@ class Expenses extends StatefulWidget {
 }
 
 class _ExpensesState extends State<Expenses> {
+  void addExpense(Expense expense) {
+    setState(() {
+      _registeredExpenses.add(expense);
+    });
+  }
+
   final List<Expense> _registeredExpenses = [
     Expense(
       title: 'Flutter',
@@ -26,26 +33,35 @@ class _ExpensesState extends State<Expenses> {
   ];
   void _openModal() {
     showModalBottomSheet(
+      isScrollControlled: true,
       context: context,
       builder: (context) {
-        return Container(
-          child: Text(""),
+        return NewExpense(
+          onAddExpense: addExpense,
         );
       },
     );
   }
 
+  final whitecolor = Colors.white;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.purple,
+      backgroundColor: Colors.deepPurple,
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
-        title: Text("Expense Tracker"),
+        title: Text("Expense Tracker",
+            style: TextStyle(
+                color: whitecolor, fontSize: 25, fontWeight: FontWeight.bold)),
         centerTitle: false,
         actions: [
           IconButton(
-              icon: Icon(Icons.add, color: Colors.white), onPressed: _openModal)
+              icon: Icon(
+                Icons.add,
+                color: whitecolor,
+                size: 30,
+              ),
+              onPressed: _openModal)
         ],
       ),
       body: Center(
