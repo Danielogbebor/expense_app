@@ -33,7 +33,7 @@ class _NewExpenseState extends State<NewExpense> {
           padding: EdgeInsets.fromLTRB(16, 48, 16, 16),
           child: TextField(
             controller: titleController,
-            decoration: InputDecoration(labelText: "Title"),
+            decoration: InputDecoration(labelText: "Expense"),
             keyboardType: TextInputType.text,
             maxLength: 50,
           ),
