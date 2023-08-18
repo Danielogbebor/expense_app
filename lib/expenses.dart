@@ -54,6 +54,7 @@ class _ExpensesState extends State<Expenses> {
   ];
   void _openModal() {
     showModalBottomSheet(
+      useSafeArea: true,
       isScrollControlled: true,
       context: context,
       builder: (context) {
@@ -67,6 +68,8 @@ class _ExpensesState extends State<Expenses> {
   final whitecolor = Colors.white;
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
     final isDarkMode =
         MediaQuery.of(context).platformBrightness == Brightness.dark;
     Widget mainContent = const Center(
@@ -78,38 +81,51 @@ class _ExpensesState extends State<Expenses> {
     );
 
     return Scaffold(
-      backgroundColor: isDarkMode
-          ? Theme.of(context).colorScheme.primary
-          : Theme.of(context).colorScheme.primary.withOpacity(0.65),
-      appBar: AppBar(
-        // backgroundColor: Colors.deepPurple,
-        title: Text("Expense Tracker",
-            style: TextStyle(
-                color: whitecolor, fontSize: 25, fontWeight: FontWeight.bold)),
-        centerTitle: false,
-        actions: [
-          IconButton(
-              icon: Icon(
-                Icons.add,
-                color: whitecolor,
-                size: 30,
-              ),
-              onPressed: _openModal)
-        ],
-      ),
-      body: Center(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Chart(expenses: _registeredExpenses),
-          Expanded(
-            child: _registeredExpenses.isEmpty
-                ? mainContent
-                : ExpenseList(
-                    expenses: _registeredExpenses,
-                    onRemoveExpense: removeExpense,
-                  ),
-          )
-        ]),
-      ),
-    );
+        backgroundColor: isDarkMode
+            ? Theme.of(context).colorScheme.primary
+            : Theme.of(context).colorScheme.primary.withOpacity(0.65),
+        appBar: AppBar(
+          // backgroundColor: Colors.deepPurple,
+          title: Text("Expense Tracker",
+              style: TextStyle(
+                  color: whitecolor,
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold)),
+          centerTitle: false,
+          actions: [
+            IconButton(
+                icon: Icon(
+                  Icons.add,
+                  color: whitecolor,
+                  size: 30,
+                ),
+                onPressed: _openModal)
+          ],
+        ),
+        body: width < 600
+            ? Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Chart(expenses: _registeredExpenses),
+                Expanded(
+                  child: _registeredExpenses.isEmpty
+                      ? mainContent
+                      : ExpenseList(
+                          expenses: _registeredExpenses,
+                          onRemoveExpense: removeExpense,
+                        ),
+                )
+              ])
+            : Row(
+                children: [
+                  Expanded(child: Chart(expenses: _registeredExpenses)),
+                  Expanded(
+                    child: _registeredExpenses.isEmpty
+                        ? mainContent
+                        : ExpenseList(
+                            expenses: _registeredExpenses,
+                            onRemoveExpense: removeExpense,
+                          ),
+                  )
+                ],
+              ));
   }
 }

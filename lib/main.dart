@@ -1,7 +1,12 @@
 import 'package:expense_app/expenses.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
+  //   (value) {},
+  // );
   runApp(const MyApp());
 }
 
@@ -59,7 +64,7 @@ class MyApp extends StatelessWidget {
           cardTheme: CardTheme()
               .copyWith(color: Colors.white, margin: EdgeInsets.all(7))),
       home: const Expenses(),
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.system,
     );
   }
 }
