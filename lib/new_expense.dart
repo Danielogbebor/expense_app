@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:expense_app/main.dart';
 import 'package:flutter/material.dart';
 
 import 'package:expense_app/models/expense.dart';
@@ -27,13 +28,21 @@ class _NewExpenseState extends State<NewExpense> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode =
+        MediaQuery.of(context).platformBrightness == Brightness.dark;
     return Column(
       children: [
         Padding(
           padding: EdgeInsets.fromLTRB(16, 48, 16, 16),
           child: TextField(
             controller: titleController,
-            decoration: InputDecoration(labelText: "Expense"),
+            decoration: InputDecoration(
+              labelText: "Expense",
+              labelStyle: TextStyle(
+                  color: isDarkMode
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.onPrimary),
+            ),
             keyboardType: TextInputType.text,
             maxLength: 50,
           ),
@@ -45,8 +54,14 @@ class _NewExpenseState extends State<NewExpense> {
               Expanded(
                 child: TextField(
                   controller: amountController,
-                  decoration:
-                      InputDecoration(labelText: "Amount", prefixText: "\$"),
+                  decoration: InputDecoration(
+                    labelStyle: TextStyle(
+                        color: isDarkMode
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.onPrimary),
+                    labelText: "Amount",
+                    prefixText: "\$",
+                  ),
                   keyboardType: TextInputType.number,
                 ),
               ),
@@ -54,43 +69,57 @@ class _NewExpenseState extends State<NewExpense> {
                   child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(selectedDate == null
-                      ? "Select Date"
-                      : formater.format(selectedDate!)),
+                  Text(
+                      selectedDate == null
+                          ? "Select Date"
+                          : formater.format(selectedDate!),
+                      style: TextStyle(
+                          color: isDarkMode
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).colorScheme.onPrimary)),
                   IconButton(
                       onPressed: presentDatePicker,
-                      icon: Icon(Icons.calendar_month))
+                      icon: Icon(Icons.calendar_month),
+                      color: isDarkMode
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.onPrimary)
                 ],
               ))
             ],
           ),
         ),
-        Row(
-          children: [
-            DropdownButton(
-              value: selectedCategory,
-              items: Category.values.map((category) {
-                return DropdownMenuItem(
-                    value: category, child: Text(category.name.toUpperCase()));
-              }).toList(),
-              onChanged: (value) {
-                if (value == null) {
-                  return;
-                }
-                setState(() {
-                  selectedCategory = value;
-                });
-              },
-            ),
-            ElevatedButton(
-                onPressed: saveExpense, child: const Text("Enter Expense")),
-            const Spacer(),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
+        Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Row(
+            children: [
+              DropdownButton(
+                value: selectedCategory,
+                items: Category.values.map((category) {
+                  return DropdownMenuItem(
+                      value: category,
+                      child: Text(category.name.toUpperCase(),
+                          style: Theme.of(context).textTheme.titleLarge));
+                }).toList(),
+                onChanged: (value) {
+                  if (value == null) {
+                    return;
+                  }
+                  setState(() {
+                    selectedCategory = value;
+                  });
                 },
-                child: const Text("Cancel"))
-          ],
+              ),
+              const Spacer(),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Cancel")),
+              Spacer(),
+              ElevatedButton(
+                  onPressed: saveExpense, child: const Text("Enter Expense")),
+            ],
+          ),
         )
       ],
     );

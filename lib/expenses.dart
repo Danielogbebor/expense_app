@@ -1,6 +1,7 @@
 import 'package:expense_app/expenses_list.dart';
 import 'package:expense_app/models/expense.dart';
 import 'package:expense_app/new_expense.dart';
+import 'package:expense_app/widget/chart.dart';
 import 'package:flutter/material.dart';
 
 class Expenses extends StatefulWidget {
@@ -15,6 +16,26 @@ class _ExpensesState extends State<Expenses> {
     setState(() {
       _registeredExpenses.add(expense);
     });
+  }
+
+  void removeExpense(Expense expense) {
+    final expenseIndex = _registeredExpenses.indexOf(expense);
+    setState(() {
+      _registeredExpenses.remove(expense);
+    });
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      duration: Duration(seconds: 3),
+      content: Text("Expense Removed"),
+      action: SnackBarAction(
+        label: "Undo",
+        onPressed: () {
+          setState(() {
+            _registeredExpenses.insert(expenseIndex, expense);
+          });
+        },
+      ),
+    ));
   }
 
   final List<Expense> _registeredExpenses = [
@@ -46,10 +67,22 @@ class _ExpensesState extends State<Expenses> {
   final whitecolor = Colors.white;
   @override
   Widget build(BuildContext context) {
+    final isDarkMode =
+        MediaQuery.of(context).platformBrightness == Brightness.dark;
+    Widget mainContent = const Center(
+      child: Text(
+        "No expense available, Add Expense",
+        style: TextStyle(
+            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+      ),
+    );
+
     return Scaffold(
-      backgroundColor: Colors.deepPurple,
+      backgroundColor: isDarkMode
+          ? Theme.of(context).colorScheme.primary
+          : Theme.of(context).colorScheme.primary.withOpacity(0.65),
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
+        // backgroundColor: Colors.deepPurple,
         title: Text("Expense Tracker",
             style: TextStyle(
                 color: whitecolor, fontSize: 25, fontWeight: FontWeight.bold)),
@@ -66,8 +99,15 @@ class _ExpensesState extends State<Expenses> {
       ),
       body: Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Text("The expense chart"),
-          Expanded(child: ExpenseList(expenses: _registeredExpenses)),
+          Chart(expenses: _registeredExpenses),
+          Expanded(
+            child: _registeredExpenses.isEmpty
+                ? mainContent
+                : ExpenseList(
+                    expenses: _registeredExpenses,
+                    onRemoveExpense: removeExpense,
+                  ),
+          )
         ]),
       ),
     );
